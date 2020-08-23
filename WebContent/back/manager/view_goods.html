@@ -1,0 +1,534 @@
+<table id="view_goods_data"></table>
+
+<div id="view_goods_search">
+	<a href="javascript:openAddGoodsDialog()" class="easyui-linkbutton"
+		data-options="iconCls:'icon-add',plain:true" style="float: left">添加</a>
+	<div class="datagrid-btn-separator"></div>
+	<label>商品类型:</label> <select id="view_goods_search_tno">
+		<option value=''>--请选择--</option>
+	</select> <label>商品类型:</label> <input type="text" placeholder="请输入商品名称..."
+		id="view_goods_search_gname" /> <a
+		href="javascript:searchGoodsInfo()" class="easyui-linkbutton"
+		data-options="iconCls:'icon-search'"></a>
+</div>
+
+<div id="view_goods_dialog" class="easyui-dialog"
+	data-options="closed:true">
+	<table id="add_goodws_table" border="1" width="100%" height="100%"
+		cellspacing="0" cellpadding="10" align="center" bgcolor="aqua"
+		bordercolor="red">
+		<caption>添加商品信息</caption>
+		<tr>
+			<td>商品名称</td>
+			<td><input type="text" name="add_goods_name" id="add_goods_name"></td>
+		<tr>
+		<tr>
+			<td>商品类别</td>
+			<td><select id="add_goods_type" name="add_goods_type"></select></td>
+		<tr>
+		<tr>
+			<td>商品单价</td>
+			<td><input type="text" name="add_goods_price"
+				id="add_goods_price"></td>
+		<tr>
+		<tr>
+			<td>商品简介</td>
+			<td><input type="text" name="add_goods_intro"
+				id="add_goods_intro"></td>
+		<tr>
+		<tr>
+			<td>商品库存量</td>
+			<td><input type="text" name="add_goods_balance"
+				id="add_goods_balance"></td>
+		<tr>
+		<tr>
+			<td>商品单位</td>
+			<td><input type="text" name="add_goods_unit" id="add_goods_unit"></td>
+		<tr>
+		<tr>
+			<td>商品保质期</td>
+			<td><input type="text" name="add_goods_qperied"
+				id="add_goods_qperied"></td>
+		<tr>
+		<tr>
+			<td>商品重量</td>
+			<td><input type="text" name="add_goods_weight"
+				id="add_goods_weight"></td>
+		<tr>
+		<tr>
+			<td>商品备注说明</td>
+			<td><input type="text" name="add_goods_descr"
+				id="add_goods_descr"></td>
+		<tr>
+		<tr>
+			<td>商品图片</td>
+			<td><input type="file" name="pics" id="pics"></td>
+		<tr>
+	</table>
+
+</div>
+
+
+<!-- 详细信息按钮 -->
+<div id="view_goods_descr" class="easyui-dialog"
+	data-options="closed:true">
+	<table id="view_goods_descr_table" border="1" width="100%"
+		height="100%" cellspacing="0" cellpadding="10" align="center"
+		bgcolor="aqua" bordercolor="red">
+		<caption>商品详细信息</caption>
+		<tr>
+			<td style="width: 50%">商品名称</td>
+			<td id="view_goods_gname"></td>
+		</tr>
+		
+		<tr>
+			<td style="width: 50%">商品编号</td>
+			<td id="view_goods_gno"></td>
+		</tr>
+		<tr>
+			<td>商品单价</td>
+			<td id="view_goods_price"></td>
+		</tr>
+		<tr>
+			<td>商品单位</td>
+			<td id="view_goods_unit"></td>
+		</tr>
+		<tr>
+			<td>商品简介</td>
+			<td id="view_goods_intro"></td>
+		</tr>
+		<tr>
+			<td>商品库存量</td>
+			<td id="view_goods_balance"></td>
+		</tr>
+
+		<tr>
+			<td>商品保质期</td>
+			<td id="view_goods_qperied"></td>
+		</tr>
+		<tr>
+			<td>商品重量</td>
+			<td id="view_goods_weight"></td>
+		</tr>
+		<tr>
+			<td>商品详细简介</td>
+			<td id="view_goods_descr_goods"></td>
+		</tr>
+		<tr>
+			<td>商品图片</td>
+			<td id="view_goods_pics"></td>
+		</tr>
+	</table>
+</div>
+
+<div id="view_goods_update" class="easyui-dialog"
+	data-options="closed:true">2222</div>
+
+<script>
+
+$(function(){
+	$.post("../../type",{op:"findAll"},data=>{
+		var str = "";
+		var str1= "";
+		$.each(data,function(index,item){
+			str +="<option value='"+item.tno+"'>"+item.tname+"</option>";
+			str1 +="<option value='"+item.tno+"'>"+item.tname+"</option>";
+
+		})
+		$("#view_goods_search_tno").append($(str));
+		$("#add_goods_type").append($(str1));
+
+	},"json");
+	
+	
+})
+
+
+var view_goods_obj;
+
+var view_goods_obj=$('#view_goods_data').datagrid({    
+    url:'../../goods',
+    queryParams:{op:"finds"},
+    fitColumns:true,
+    loadMsg:'数据加载中,请稍后...',
+    striped:true,
+    sortName:"gno",
+    sortOrder:"desc",
+    remoteSort:false,
+    singleSelect:true,
+    pagination:true,
+    rownumbers:true,
+    pageSize:10,
+    pageList:[10,15,20,30,40,50,100],
+    columns:[[    
+        {field:'gno',title:'商品编号',width:50,align:'center',sortable:true},    
+        {field:'gname',title:'商品名称',width:100,align:'center'},    
+        {field:'tname',title:'所属类型',width:100,align:'center'},
+        {field:'price',title:'单价',width:50,align:'center'},
+        {field:'unit',title:'库存',width:50,align:'center'},    
+        {field:'intro',title:'简介',width:200,align:'center'},   
+        {field:'pic',title:'图片',width:200,align:'center',formatter:function(val,row,index){
+        	return "<img src='../../"+val+"' width='50px' height='50px'/>";
+        }},    
+
+        {field:'_operator',title:'操作',width:200,align:'center',formatter:function(val,row,index){
+        	var str ='<a href="javascript:void(0)" class="mafei-icon-book-open"   onclick="goods_descr('+row.gno+')" >详细</a>';
+        	str +='<a href="javascript:void(0)"  class="mafei-icon-add " onclick="goods_update('+row.gno+')" >修改</a>';
+        	gno=row.gno;
+        	gname = row.gname;
+        	return str;
+        }},    
+    ]],
+    toolbar:"#view_goods_search"
+});
+
+var gno;
+//名称
+var gname;
+//属性
+var gtype;
+//单价
+var price;
+//库存
+var balance;
+//简介
+var intro;
+
+//多张图片
+var pics;
+//保质期
+var qperied;
+// 单位
+var unit;
+//重量
+var weight;
+//详细简介
+var descr;
+
+//详细信息按钮
+function goods_descr(gno){
+	$("#view_goods_descr_table  td").removeAttr("onlick");
+
+	
+	
+	$.post("../../goods",{op:"findByGno",gno:gno},data=>{
+		gno = data.data.gno;
+		gname = data.data.gname;
+		price = data.data.price;
+		balance= data.data.balance;
+		intro = data.data.intro;
+		pics =data.data.pics;
+		unit =data.data.unit;
+		qperied = data.data.qperied;
+		weight = data.data.weight;
+		descr = data.data.descr;
+		
+		$("#view_goods_gno").text(gno);
+		$("#view_goods_gname").text(gname);
+		$("#view_goods_price").text(price);
+		$("#view_goods_balance").text(balance);
+		$("#view_goods_intro").text(intro);
+		$("#view_goods_unit").text(unit);
+		$("#view_goods_qperied").text(qperied);
+		$("#view_goods_weight").text(weight);
+		
+		if(descr == null || descr == ""){
+			$("#view_goods_descr_goods").text("没有详细简介");
+		}else{
+			$("#view_goods_descr_goods").text(descr);
+		}
+		/* $("#view_goods_descr").text(descr); */
+		var imgPic= pics.split(";");
+		$("#view_goods_pics").text("");
+		for(var i=0;i<imgPic.length;i++){
+			 var imgs = "<img src='../../"+imgPic[i]+"' width='100px' height='100px'/>";
+		       $("#view_goods_pics").append(imgs);
+		}
+		
+
+		
+	},"json");
+	
+	
+	$("#view_goods_descr").dialog({
+		title:"详细信息",
+		// fit:true,
+		width:1000,
+		height:600,
+		closed:false,
+		cache:false,
+		iconCls:"icon-add",
+		modal:true,
+		toolbar: [{
+			iconCls: 'icon-edit',
+			handler: function(){alert('编辑按钮')}
+		},'-',{
+			text:"取消",
+			iconCls: 'icon-help',
+			handler: function(){
+				$("#view_goods_descr").dialog('close');
+			}
+		}]
+		
+	});
+	
+}
+
+
+//修改信息按钮
+function goods_update(gno){
+	
+	$.post("../../goods",{op:"findByGno",gno:gno},data=>{
+		gno = data.data.gno;
+		gname = data.data.gname;
+		price = data.data.price;
+		balance= data.data.balance;
+		intro = data.data.intro;
+		pics =data.data.pics;
+		unit =data.data.unit;
+		qperied = data.data.qperied;
+		weight = data.data.weight;
+		descr = data.data.descr;
+		
+		$("#view_goods_gno").text(gno);
+		$("#view_goods_gname").text(gname);
+		$("#view_goods_price").text(price);
+		$("#view_goods_balance").text(balance);
+		$("#view_goods_intro").text(intro);
+		$("#view_goods_unit").text(unit);
+		$("#view_goods_qperied").text(qperied);
+		$("#view_goods_weight").text(weight);
+		
+		if(!descr){
+			$("#view_goods_descr_goods").text(descr);
+		}else{
+			$("#view_goods_descr_goods").text("没有详细简介");
+		}
+		/* $("#view_goods_descr").text(descr); */
+		var imgPic= pics.split(";");
+		$("#view_goods_pics").text("");
+		for(var i=0;i<imgPic.length;i++){
+			 var imgs = "<img src='../../"+imgPic[i]+"' width='100px' height='100px'/>";
+		       $("#view_goods_pics").append(imgs);
+		}
+		
+		var $delObj;
+	    
+		//移除td所有事件
+		//$("#view_goods_descr td").off();
+		
+		/* ("#view_goods_descr_table td").bind({
+			click:function(){
+				console.log(222);
+			}
+		}) */
+		$("#view_goods_descr_table  td").click(function(){
+			//创建一个可以输入的文本框
+			var $inputObj = $("<input type='text' >");
+			//去掉边框
+		    $inputObj.css("border","none");
+			//改变字体大小
+			$inputObj.css("font-size","12px");
+			//找到当前鼠标的点击td标签
+			 $tdObj = $(this);
+			//获取当前td对象所在的行 用于删除操作
+			$delObj =$tdObj.parent();
+			
+			//控制文本框大小
+			$inputObj.width($tdObj.width()-5);
+			$inputObj.height($tdObj.height()-5);
+							
+			//设置文本框的背景颜色
+			//$inputObj.css("background-color",$tdObj.css("background-color"));
+			
+			//现保存td原来的值  用于用户 显示文本框  放弃修改时  使用
+			var text = $tdObj.text();
+			//将td的内容放入文本框内
+			$inputObj.val(text);
+			//清空td中的内容
+			$tdObj.html("");
+			//文本框插入td中
+			$inputObj.appendTo($tdObj);
+			
+			//选择文本框的内容
+			$inputObj.select();
+			//移除文本框的所有事件
+			$inputObj.off();
+			//将文本框的点击事件返回false 防止点击文本框时内容消失
+			$inputObj.click(function(){
+				return false;
+			});
+			//td的光标失去焦点 复原 即取消修改
+	       $inputObj.blur(function(){
+		   //还原初始值
+		   $tdObj.html(text);
+	        });
+			
+	     //回车 保存和ESC取消修改 键盘事件
+			$inputObj.keyup(function(e){
+				//事件对象
+				//回车键健值
+				var keyCode= e.keyCode ||e.which; //兼容
+				//keyCode ==13
+				//判断用户是否使用回车键来保存信息
+				if(e.key && e.key === "Enter"){
+					//获取当前文本框的内容
+					var inpVal = $(this).val();
+					//将td的内容修改成文本框的内容
+					$tdObj.html(inpVal);
+					
+					//温馨提示
+					//淡入
+					$("#tishiInfo").fadeIn("slow",function(){
+						//淡出
+						$("#tishiInfo").fadeOut(3000);
+					});	
+				}
+				//用户取消修改
+				if(keyCode ==27){
+					$tdObj.html(text);
+				}
+				
+			});
+			
+		})
+		
+
+		
+	},"json");
+	
+	
+	
+	$("#view_goods_descr").dialog({
+		title:"修改商品信息",
+		// fit:true,
+		width:1000,
+		height:600,
+		closed:false,
+		cache:false,
+		iconCls:"icon-add",
+		modal:true,
+		toolbar: [{
+			text:"确定",
+			iconCls: 'icon-edit',
+			handler: function(){
+				gno =$.trim($("#view_goods_gno").text());
+				gname =$.trim($("#view_goods_gname").text());
+				price =$.trim($("#view_goods_price").text());
+				intro =$.trim($("#view_goods_intro").text());
+				balance =$.trim($("#view_goods_balance").text());
+			    unit =$.trim($("#view_goods_unit").text());
+				qperied =$.trim($("#view_goods_qperied").text());
+			    weight =$.trim($("#view_goods_weight").text());
+		        descr =$.trim($("#view_goods_descr_goods").text());
+		        console.log(gname+"-"+price+"-"+intro+"-"+balance+"-"+unit+"-"+qperied+"-"+descr+"-"+weight);
+		      
+		        $.post("../../goods",{op:"update",gno:gno,gname:gname,price:price,intro:intro,balance:balance,unit:unit,qperied:qperied,weight:weight,descr:descr},data=>{
+		        	console.log(data);
+		    		if(data==-1){
+		    			alert("请填写信息完整");
+		    		}else if (data>0){
+		    			alert("修改成功");
+		    			//刷新表格
+		    			view_goods_obj.datagrid("reload"); 
+		    			//关闭表格
+        				$("#view_goods_descr").dialog('close');
+		    		}else{
+		    			alert("修改失败");
+		    		}		    		
+		    	},"json");
+				
+			}
+		},'-',{
+			text:"取消",
+			iconCls: 'icon-help',
+			handler: function(){
+				$("#view_goods_descr").dialog('close');
+			}
+		}]
+		
+	});
+}
+
+
+///添加商品信息按钮
+function openAddGoodsDialog(){
+	$("#view_goods_dialog").dialog({
+		title:"添加商品信息",
+		// fit:true,
+		width:600,
+		height:400,
+		closed:false,
+		cache:false,
+		iconCls:"icon-add",
+		modal:true,
+		buttons:[{
+			text:"确定",
+			iconCls:"icon-ok",
+			handler:function(){
+				
+				 var gname =$.trim($("#add_goods_name").val());
+				  var tno =$.trim($("#add_goods_type").val());
+				  var price =$.trim($("#add_goods_price").val());
+				  var intro =$.trim($("#add_goods_intro").val());
+				  var balance =$.trim($("#add_goods_balance").val());
+				  var unit =$.trim($("#add_goods_unit").val());
+				  var qperied =$.trim($("#add_goods_qperied").val());
+				  var weight =$.trim($("#add_goods_weight").val());
+				  var descr =$.trim($("#add_goods_descr").val());
+				  
+				  
+				//确定上传信息
+				 $.ajaxFileUpload({
+					 url:"../../goods?op=add",
+					 secureuri:false,
+					 fileElementId:["pics"], //要上传对的文件文本框对应的Id值，如果只有一个fileElementId:"pics"
+					 dataType:"text",
+					 data:{gname:gname,tno:tno,price:price,intro:intro,balance:balance,unit:unit,qperied:qperied,weight:weight,descr:descr},
+					 success:function(data,status){
+						 data = parseInt($.trim(data));
+						 if(data == -1){
+							 alert("您输入的信息不完整");
+						 } else if (data >0) {			
+							 alert("添加成功...");
+				    			view_goods_obj.datagrid("reload"); 
+							$("#view_goods_dialog").dialog('close');
+						 } else {
+							 alert("添加失败...");
+						 }
+					 },
+					 error: function(data,status,e){
+						 alert("添加学生信息失败....\n"+e);
+						 
+					 }
+					  
+				  })
+			}
+		},{
+			text:"取消",
+			iconCls:"icon-cancel",
+			handler:function(){
+				$("#view_goods_dialog").dialog('close');
+			}
+		//$("#view_goods_dialog").dialog('open');
+
+		}]
+		
+	});
+	
+}
+
+
+function searchGoodsInfo(){
+	var tno = $.trim($("#view_goods_search_tno").val());
+	var gname = $.trim($("#view_goods_search_gname").val());
+	
+	view_goods_obj.datagrid({
+		url:"../../goods",
+	    queryParams:{op:"findByCondition",tno:tno,gname:gname}
+	})	
+
+}
+
+
+</script>

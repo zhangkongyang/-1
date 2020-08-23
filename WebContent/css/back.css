@@ -1,0 +1,7 @@
+@charset "utf-8";
+/* CSS Document */
+
+/*后台自定义样式*/
+#add_goodws_table  input{ width:416px;height:38px;border-top:0px;border-left:0px;border-right:0px;border-bottom:0px;font-size:25px;} 
+
+#add_goodws_table  select{ width:416px;height:38px;border-top:0px;border-left:0px;border-right:0px;border-bottom:0px;font-size:25px;} 
